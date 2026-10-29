@@ -123,12 +123,19 @@ aside.right{border-right:none;border-left:1px solid #1e293b;width:24rem}
 .section-panel.show{display:block}
 .section-panel h3{font-size:.75rem;font-weight:800;margin:0 0 .75rem;display:flex;align-items:center;gap:.4rem;padding-bottom:.5rem;border-bottom:1px solid #334155;color:#e2e8f0}
 .section-panel h3 .close-btn{margin-left:auto;background:transparent;padding:.2rem .4rem;color:#64748b;font-size:.9rem;width:auto}
-.section-axis{background:#020617;border:1px solid #1e293b;border-radius:.5rem;padding:.6rem;margin-bottom:.5rem}
+.section-axis{background:#020617;border:1px solid #1e293b;border-radius:.5rem;padding:.6rem;margin-bottom:.5rem;transition:border-color .2s,background .2s}
 .section-axis-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem}
 .section-axis-header .axis-name{font-weight:800;font-size:.8rem;font-family:monospace;width:16px}
 .ax-x{color:#ef4444}.ax-y{color:#10b981}.ax-z{color:#3b82f6}
 .section-axis-header label{font-size:.6rem;color:#94a3b8;display:flex;align-items:center;gap:.3rem;cursor:pointer;text-transform:uppercase;font-weight:700}
 .section-axis-header label input{width:14px;height:14px;accent-color:#3b82f6;padding:0}
+.section-axis-header .invert-btn{margin-left:auto;background:#1e293b;border:1px solid #334155;color:#64748b;padding:.25rem .45rem;font-size:.7rem;border-radius:.3rem;min-width:auto;width:auto;line-height:1;transition:all .15s}
+.section-axis-header .invert-btn:hover{background:#334155;color:#e2e8f0;border-color:#475569}
+.section-axis-header .invert-btn.active{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-color:#a78bfa;box-shadow:0 0 0 2px rgba(124,58,237,.3)}
+.section-axis.inverted{background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.35)}
+.section-axis.inverted .val{color:#c4b5fd}
+.section-axis.inverted .section-slider input[type=range]::-webkit-slider-thumb{background:#a78bfa}
+.section-axis.inverted .section-slider input[type=range]::-moz-range-thumb{background:#a78bfa}
 .section-slider{display:flex;align-items:center;gap:.5rem;font-size:.65rem}
 .section-slider input[type=range]{flex:1}
 .section-slider .val{font-family:monospace;color:#e2e8f0;min-width:52px;text-align:right}
@@ -199,6 +206,9 @@ footer{height:1.5rem;background:#020617;border-top:1px solid #1e293b;padding:0 1
 .measure-btn.active i{color:#22d3ee}
 .rule-item{background:#020617;border:1px solid #1e293b;border-radius:.4rem;padding:.5rem;margin-bottom:.4rem;font-size:.7rem}
 .rule-item.active{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.08)}
+.hole-btn{background:#020617;border:2px solid #1e293b;border-radius:.5rem;color:#94a3b8;font-weight:600;cursor:pointer;transition:all .15s;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;padding:.35rem}
+.hole-btn:hover{border-color:#3b82f6;background:#0f172a;color:#cbd5e1}
+.hole-btn.active{border-color:#22d3ee;background:rgba(34,211,238,.12);color:#22d3ee;box-shadow:0 0 0 2px rgba(34,211,238,.25)}
 @media (max-width:900px){
   .mobile-fab{display:flex}
   header{padding-left:56px;padding-right:56px;padding-top:env(safe-area-inset-top)}
@@ -267,7 +277,7 @@ footer{height:1.5rem;background:#020617;border-top:1px solid #1e293b;padding:0 1
     <div>
       <div style="display:flex;align-items:center;gap:.4rem">
         <span class="title">AP BIM</span>
-        <span class="badge">v7.3</span>
+        <span class="badge">v7.9</span>
         <span id="licenseBadge" style="display:none;font-size:.6rem;padding:.1rem .4rem;border-radius:.25rem;font-weight:600"></span>
       </div>
       <div class="subtitle">APAVAN ENGENHARIA E CONSULTORIA</div>
@@ -296,11 +306,13 @@ footer{height:1.5rem;background:#020617;border-top:1px solid #1e293b;padding:0 1
     <button id="tab-btn-models" class="active" onclick="switchLeftTab('models')" title="Modelos"><i class="fa-solid fa-cubes"></i></button>
     <button id="tab-btn-transform" onclick="switchLeftTab('transform')" title="Transformar"><i class="fa-solid fa-rotate"></i></button>
     <button id="tab-btn-edit" onclick="switchLeftTab('edit')" title="Editar"><i class="fa-solid fa-arrows-up-down-left-right"></i></button>
+    <button id="tab-btn-similar" onclick="switchLeftTab('similar')" title="Ações"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
     <button id="tab-btn-tree" onclick="switchLeftTab('tree')" title="Árvore"><i class="fa-solid fa-sitemap"></i></button>
     <button id="tab-btn-appearance" onclick="switchLeftTab('appearance')" title="Cores"><i class="fa-solid fa-palette"></i></button>
     <button id="tab-btn-dimension" onclick="switchLeftTab('dimension')" title="Dimensões"><i class="fa-solid fa-ruler-combined"></i></button>
     <button id="tab-btn-measure" onclick="switchLeftTab('measure')" title="Medir 3D"><i class="fa-solid fa-ruler"></i></button>
     <button id="tab-btn-qty" onclick="switchLeftTab('qty')" title="Quantitativos"><i class="fa-solid fa-cubes-stacked"></i></button>
+    <button id="tab-btn-intersect" onclick="switchLeftTab('intersect')" title="Booleanas"><i class="fa-solid fa-square-minus"></i></button>
     <button id="tab-btn-rules" onclick="switchLeftTab('rules')" title="Regras"><i class="fa-solid fa-shield-halved"></i></button>
   </div>
 
@@ -359,6 +371,53 @@ footer{height:1.5rem;background:#020617;border-top:1px solid #1e293b;padding:0 1
         <button onclick="cloneSelectedElement()" style="width:100%;padding:.55rem;font-weight:700;margin-bottom:.4rem"><i class="fa-solid fa-clone" style="color:#60a5fa"></i> Duplicar</button>
         <button onclick="deleteSelectedElement()" style="width:100%;background:#dc2626;color:#fff;padding:.6rem;font-weight:700"><i class="fa-solid fa-trash"></i> Excluir</button>
       </div>
+    </div>
+  </div>
+
+  <!-- NOVA ABA: SIMILARES / AÇÕES -->
+  <div id="tab-content-similar" class="tab-content">
+    <div class="panel">
+      <div class="panel-title" style="justify-content:space-between">
+        <span><i class="fa-solid fa-wand-magic-sparkles"></i> Seleção Similar</span>
+      </div>
+      <div id="simSelectedInfo" style="font-size:.7rem;color:#94a3b8;margin-bottom:.5rem">Nenhum elemento selecionado.</div>
+      
+      <div style="background:#0f172a;padding:.4rem;border-radius:.4rem;margin-bottom:.5rem">
+        <div style="font-size:.65rem;color:#cbd5e1;margin-bottom:.3rem;font-weight:700">Critérios:</div>
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.7rem;margin-bottom:.2rem;cursor:pointer"><input type="checkbox" id="simMatchClass" checked style="width:14px;height:14px"> Tipo IFC</label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.7rem;margin-bottom:.2rem;cursor:pointer"><input type="checkbox" id="simMatchDisc" checked style="width:14px;height:14px"> Disciplina</label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.7rem;margin-bottom:.2rem;cursor:pointer"><input type="checkbox" id="simMatchStorey" checked style="width:14px;height:14px"> Pavimento</label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.7rem;cursor:pointer"><input type="checkbox" id="simMatchName" style="width:14px;height:14px"> Nome exato</label>
+      </div>
+
+      <button onclick="findSimilarElements()" style="width:100%;margin-bottom:.35rem;padding:.5rem;background:#2563eb;color:#fff;font-weight:700"><i class="fa-solid fa-magnifying-glass"></i> Buscar Similares</button>
+      <button onclick="hideSimilarElements()" style="width:100%;padding:.5rem;background:#f97316;color:#fff;font-weight:700"><i class="fa-solid fa-eye-slash"></i> Ocultar Similares</button>
+      <div id="simStatus" style="font-size:.7rem;color:#34d399;margin-top:.5rem;text-align:center">—</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-pen"></i> Editar Nome</div>
+      <div style="display:flex;gap:.35rem">
+        <input type="text" id="simNewName" placeholder="Novo nome..." style="flex:1">
+        <button onclick="renameSelectedElement()" style="background:#059669;color:#fff">OK</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-folder-tree"></i> Mover na Árvore</div>
+      <div style="margin-bottom:.4rem">
+        <label style="font-size:.65rem;color:#94a3b8">Disciplina</label>
+        <select id="simNewDisc"></select>
+      </div>
+      <div style="margin-bottom:.4rem">
+        <label style="font-size:.65rem;color:#94a3b8">Pavimento</label>
+        <select id="simNewStorey"></select>
+      </div>
+      <div style="margin-bottom:.5rem">
+        <label style="font-size:.65rem;color:#94a3b8">Tipo IFC</label>
+        <select id="simNewClass"></select>
+      </div>
+      <button onclick="moveElementToFolder()" style="width:100%;padding:.5rem;background:#7c3aed;color:#fff;font-weight:700"><i class="fa-solid fa-share"></i> Mover Elemento</button>
     </div>
   </div>
 
@@ -518,6 +577,91 @@ footer{height:1.5rem;background:#020617;border-top:1px solid #1e293b;padding:0 1
     </div>
   </div>
 
+  <div id="tab-content-intersect" class="tab-content">
+
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-scissors" style="color:#f87171"></i> Aparar por Interseção</div>
+      <div style="font-size:.68rem;color:#94a3b8;margin-bottom:.5rem;line-height:1.5">
+        Subtrai o elemento <b style="color:#f97316">B</b> do elemento <b style="color:#60a5fa">A</b>.
+        Ex.: A = viga, B = pilar → remove a ponta da viga dentro do pilar.
+      </div>
+      <button onclick="pickBooleanElement('A')" id="boolA-btn" style="width:100%;margin-bottom:.35rem;padding:.55rem;background:#1e40af;color:#fff;text-align:left">
+        <i class="fa-solid fa-crosshairs"></i> <span id="boolA-label">Selecionar A (será cortado)</span>
+      </button>
+      <button onclick="pickBooleanElement('B')" id="boolB-btn" style="width:100%;margin-bottom:.35rem;padding:.55rem;background:#9a3412;color:#fff;text-align:left">
+        <i class="fa-solid fa-crosshairs"></i> <span id="boolB-label">Selecionar B (cortador)</span>
+      </button>
+      <button onclick="swapBooleanElements()" style="width:100%;margin-bottom:.35rem;font-size:.65rem;padding:.35rem">
+        <i class="fa-solid fa-right-left"></i> Trocar A ↔ B
+      </button>
+      <button onclick="applyBooleanTrim()" id="btnApplyTrim" disabled style="width:100%;padding:.6rem;background:#dc2626;color:#fff;font-weight:700;opacity:.4">
+        <i class="fa-solid fa-scissors"></i> Aplicar Corte
+      </button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-circle-notch" style="color:#22d3ee"></i> Abrir Vão / Furo</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.35rem;margin-bottom:.5rem">
+        <button class="hole-btn" id="hole-btn-slab" onclick="startHole('slab')" style="font-size:.62rem">
+          <i class="fa-solid fa-layer-group" style="font-size:16px"></i>Shaft Laje
+        </button>
+        <button class="hole-btn" id="hole-btn-beam" onclick="startHole('beam')" style="font-size:.62rem">
+          <i class="fa-solid fa-minus" style="font-size:16px"></i>Furo Viga
+        </button>
+        <button class="hole-btn" id="hole-btn-column" onclick="startHole('column')" style="font-size:.62rem">
+          <i class="fa-solid fa-square" style="font-size:16px"></i>Furo Pilar
+        </button>
+      </div>
+      <div id="holeHint" style="font-size:.68rem;color:#94a3b8;min-height:32px;padding:.4rem;background:#020617;border-radius:.4rem;line-height:1.4">
+        Selecione um modo e clique no elemento hospedeiro.
+      </div>
+      <button onclick="cancelHoleMode()" id="btnCancelHole" style="width:100%;margin-top:.35rem;display:none;padding:.4rem;font-size:.65rem">
+        <i class="fa-solid fa-xmark"></i> Cancelar
+      </button>
+    </div>
+
+    <div class="panel" id="cutterEditPanel" style="display:none; border-color:#fbbf24; background:rgba(251,191,36,0.05);">
+      <div class="panel-title" style="color:#fbbf24; justify-content:space-between;">
+        <span><i class="fa-solid fa-up-down-left-right"></i> Ajustar Furo / Vão</span>
+        <button onclick="deselectCutter()" style="background:transparent; color:#fbbf24; padding:0; font-size:.9rem;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="cutterEditInfo" style="font-size:.68rem;color:#94a3b8;margin-bottom:.5rem">Arraste ou use o teclado.</div>
+      
+      <!-- Dimensões -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.75rem;border-bottom:1px solid #334155;padding-bottom:.5rem;">
+        <div>
+          <label style="font-size:.65rem;color:#94a3b8" id="cutterWidthLabel">Largura/Diam (m)</label>
+          <input type="number" id="cutterWidth" step="0.05" min="0.05" style="padding:.2rem;font-size:.75rem" onchange="onCutterSizeChange()">
+        </div>
+        <div>
+          <label style="font-size:.65rem;color:#94a3b8" id="cutterHeightLabel">Altura (m)</label>
+          <input type="number" id="cutterHeight" step="0.05" min="0.05" style="padding:.2rem;font-size:.75rem" onchange="onCutterSizeChange()">
+        </div>
+      </div>
+
+      <!-- Posição -->
+      <div style="margin-bottom:.5rem"><label style="font-size:.65rem;color:#ef4444">X <span id="cutterXVal" style="float:right;color:#fbbf24">0.00</span></label><input type="range" id="cutterX" min="-20" max="20" step="0.05" value="0" oninput="onCutterSlider('X')"></div>
+      <div style="margin-bottom:.5rem"><label style="font-size:.65rem;color:#10b981">Y <span id="cutterYVal" style="float:right;color:#fbbf24">0.00</span></label><input type="range" id="cutterY" min="-20" max="20" step="0.05" value="0" oninput="onCutterSlider('Y')"></div>
+      <div style="margin-bottom:.5rem"><label style="font-size:.65rem;color:#3b82f6">Z <span id="cutterZVal" style="float:right;color:#fbbf24">0.00</span></label><input type="range" id="cutterZ" min="-20" max="20" step="0.05" value="0" oninput="onCutterSlider('Z')"></div>
+      
+      <div style="font-size:.6rem;color:#64748b;margin-top:.5rem;text-align:center;">Teclado: Setas (X/Y) • PageUp/Down (Z) • Shift acelera</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-clock-rotate-left" style="color:#fbbf24"></i> Histórico / Exibição</div>
+      <button onclick="toggleShowCutters()" id="btnToggleCutters" style="width:100%;margin-bottom:.35rem;padding:.5rem;font-size:.7rem;background:#0891b2;color:#fff">
+        <i class="fa-solid fa-eye"></i> Exibir Cortadores
+      </button>
+      <button onclick="undoLastBoolean()" id="btnUndoBool" disabled style="width:100%;margin-bottom:.35rem;padding:.5rem;font-size:.7rem;opacity:.4">
+        <i class="fa-solid fa-rotate-left"></i> Desfazer Último Furo
+      </button>
+      <button onclick="restoreAllGeometry()" style="width:100%;padding:.5rem;font-size:.7rem;background:#7f1d1d;color:#fff">
+        <i class="fa-solid fa-broom"></i> Restaurar Todos os Cortes
+      </button>
+    </div>
+
+  </div>
+
   <div id="tab-content-rules" class="tab-content">
     <div class="panel"><div class="panel-title"><i class="fa-solid fa-shield-halved"></i> Tolerâncias Globais (mm)</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
@@ -592,9 +736,11 @@ footer{height:1.5rem;background:#020617;border-top:1px solid #1e293b;padding:0 1
     <div style="font-size:.6rem;color:#64748b;margin-top:.1rem" id="selElemGUID">GUID: -</div>
   </div>
   <div style="display:flex;gap:.2rem;flex-shrink:0">
+    <button class="icon-btn" onclick="switchLeftTab('similar')"><i class="fa-solid fa-wand-magic-sparkles" style="color:#fbbf24"></i></button>
     <button class="icon-btn" onclick="switchLeftTab('edit')"><i class="fa-solid fa-arrows-up-down-left-right" style="color:#22d3ee"></i></button>
     <button class="icon-btn" onclick="switchLeftTab('dimension')"><i class="fa-solid fa-ruler-combined" style="color:#fb923c"></i></button>
     <button class="icon-btn" onclick="switchLeftTab('appearance')"><i class="fa-solid fa-palette" style="color:#ec4899"></i></button>
+    <button class="icon-btn" onclick="switchLeftTab('intersect')"><i class="fa-solid fa-square-minus" style="color:#f87171"></i></button>
     <button class="icon-btn" onclick="isolateSelectedElement()"><i class="fa-solid fa-filter" style="color:#fbbf24"></i></button>
     <button class="icon-btn" onclick="hideSelectedElement()"><i class="fa-solid fa-eye-slash" style="color:#f87171"></i></button>
     <button class="icon-btn" onclick="showAllElements()"><i class="fa-solid fa-eye" style="color:#34d399"></i></button>
@@ -616,10 +762,71 @@ footer{height:1.5rem;background:#020617;border-top:1px solid #1e293b;padding:0 1
 
 <div class="section-panel" id="sectionPanel">
   <h3><i class="fa-solid fa-scissors" style="color:#a78bfa"></i> Plano de Corte <button class="close-btn" onclick="toggleSectionPanel()"><i class="fa-solid fa-xmark"></i></button></h3>
-  <div class="section-axis"><div class="section-axis-header"><span class="axis-name ax-x">X</span><label><input type="checkbox" id="secX-enabled" onchange="applySectionPlanes()"> Ativo</label></div><div class="section-slider"><input type="range" id="secX-pos" min="-30" max="30" step="0.1" value="0" oninput="onSectionSlider('X')"><span class="val" id="secX-val">0.00 m</span></div></div>
-  <div class="section-axis"><div class="section-axis-header"><span class="axis-name ax-y">Y</span><label><input type="checkbox" id="secY-enabled" onchange="applySectionPlanes()"> Ativo</label></div><div class="section-slider"><input type="range" id="secY-pos" min="-30" max="30" step="0.1" value="0" oninput="onSectionSlider('Y')"><span class="val" id="secY-val">0.00 m</span></div></div>
-  <div class="section-axis"><div class="section-axis-header"><span class="axis-name ax-z">Z</span><label><input type="checkbox" id="secZ-enabled" onchange="applySectionPlanes()"> Ativo</label></div><div class="section-slider"><input type="range" id="secZ-pos" min="-30" max="30" step="0.1" value="0" oninput="onSectionSlider('Z')"><span class="val" id="secZ-val">0.00 m</span></div></div>
-  <div class="section-actions"><button class="primary" onclick="fitSectionRangeToModel()"><i class="fa-solid fa-expand"></i> Ajustar</button><button onclick="clearAllSections()"><i class="fa-solid fa-rotate-left"></i> Limpar</button></div>
+
+  <div class="section-axis" id="secX-axis">
+    <div class="section-axis-header">
+      <span class="axis-name ax-x">X</span>
+      <label><input type="checkbox" id="secX-enabled" onchange="applySectionPlanes()"> Ativo</label>
+      <button class="invert-btn" onclick="toggleSectionInvert('X')" id="secX-invert" title="Inverter lado do corte"><i class="fa-solid fa-arrow-right-arrow-left"></i></button>
+    </div>
+    <div class="section-slider"><input type="range" id="secX-pos" min="-30" max="30" step="0.1" value="0" oninput="onSectionSlider('X')"><span class="val" id="secX-val">0.00 m</span></div>
+  </div>
+
+  <div class="section-axis" id="secY-axis">
+    <div class="section-axis-header">
+      <span class="axis-name ax-y">Y</span>
+      <label><input type="checkbox" id="secY-enabled" onchange="applySectionPlanes()"> Ativo</label>
+      <button class="invert-btn" onclick="toggleSectionInvert('Y')" id="secY-invert" title="Inverter lado do corte"><i class="fa-solid fa-arrow-right-arrow-left"></i></button>
+    </div>
+    <div class="section-slider"><input type="range" id="secY-pos" min="-30" max="30" step="0.1" value="0" oninput="onSectionSlider('Y')"><span class="val" id="secY-val">0.00 m</span></div>
+  </div>
+
+  <div class="section-axis" id="secZ-axis">
+    <div class="section-axis-header">
+      <span class="axis-name ax-z">Z</span>
+      <label><input type="checkbox" id="secZ-enabled" onchange="applySectionPlanes()"> Ativo</label>
+      <button class="invert-btn" onclick="toggleSectionInvert('Z')" id="secZ-invert" title="Inverter lado do corte"><i class="fa-solid fa-arrow-right-arrow-left"></i></button>
+    </div>
+    <div class="section-slider"><input type="range" id="secZ-pos" min="-30" max="30" step="0.1" value="0" oninput="onSectionSlider('Z')"><span class="val" id="secZ-val">0.00 m</span></div>
+  </div>
+
+  <div class="section-actions">
+    <button class="primary" onclick="fitSectionRangeToModel()"><i class="fa-solid fa-expand"></i> Ajustar</button>
+    <button onclick="clearAllSections()"><i class="fa-solid fa-rotate-left"></i> Limpar</button>
+    <button onclick="invertAllActiveSections()" style="grid-column:1/-1;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff"><i class="fa-solid fa-arrow-right-arrow-left"></i> Inverter Ativos</button>
+  </div>
+</div>
+
+<div class="modal" id="holeModal">
+  <div class="modal-box">
+    <h2 style="display:flex;align-items:center;gap:.5rem"><i class="fa-solid fa-circle-notch" style="color:#22d3ee"></i> Configurar Vão</h2>
+    <p>Defina a forma e as dimensões do furo. O vão atravessa o elemento na direção da face clicada.</p>
+    <div style="margin-bottom:.75rem">
+      <label style="font-size:.7rem;color:#94a3b8;font-weight:700">Forma</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem;margin-top:.35rem">
+        <button onclick="setHoleShape('rect')" id="holeShapeRect" class="btn-full" style="padding:.55rem;font-size:.75rem;background:#2563eb;color:#fff;margin-top:0">▭ Retangular</button>
+        <button onclick="setHoleShape('circle')" id="holeShapeCircle" class="btn-full" style="padding:.55rem;font-size:.75rem;background:#1e293b;margin-top:0">○ Circular</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem">
+      <div>
+        <label style="font-size:.7rem;color:#94a3b8;font-weight:700">Largura (m)</label>
+        <input type="number" id="holeWidth" value="0.5" step="0.05" min="0.05" style="margin-top:.2rem;text-align:center;font-family:monospace">
+      </div>
+      <div>
+        <label style="font-size:.7rem;color:#94a3b8;font-weight:700" id="holeHeightLabel">Altura (m)</label>
+        <input type="number" id="holeHeight" value="0.5" step="0.05" min="0.05" style="margin-top:.2rem;text-align:center;font-family:monospace">
+      </div>
+    </div>
+    <div style="margin-bottom:.75rem">
+      <label style="font-size:.7rem;color:#94a3b8;font-weight:700">Rotação <span id="holeRotVal" style="color:#60a5fa">0°</span></label>
+      <input type="range" id="holeRotation" min="0" max="180" value="0" step="5" oninput="document.getElementById('holeRotVal').innerText=this.value+'°'">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.75rem">
+      <button onclick="closeHoleModal()" style="padding:.7rem;font-weight:700">Cancelar</button>
+      <button onclick="applyHole()" style="padding:.7rem;font-weight:800;background:#dc2626;color:#fff">Aplicar Vão</button>
+    </div>
+  </div>
 </div>
 
 <div class="align-modal-backdrop" id="alignModalBackdrop" onclick="closeAlignModal()"></div>
@@ -659,7 +866,7 @@ footer{height:1.5rem;background:#020617;border-top:1px solid #1e293b;padding:0 1
 
 <script>
 /* ============================================================
-   AP BIM v7.3 — Script consolidado
+   AP BIM v7.9 — Script consolidado
    ============================================================ */
 
 /* SAFE STORAGE */
@@ -688,11 +895,11 @@ var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='M
 var COLOR_SWATCHES=['#ef4444','#f97316','#eab308','#22c55e','#10b981','#14b8a6','#06b6d4','#3b82f6','#6366f1','#8b5cf6','#a855f7','#ec4899','#f43f5e','#64748b','#94a3b8','#f8fafc'];
 var DISCIPLINE_COLORS={ARQUITETURA:'#60a5fa',ESTRUTURA:'#94a3b8',HIDRAULICO:'#22d3ee',ELETRICO:'#fbbf24',HVAC:'#a855f7',INCENDIO:'#ef4444','BIM/IFC':'#64748b'};
 var DISCIPLINAS=['ARQUITETURA','ESTRUTURA','HIDRAULICO','ELETRICO','HVAC','INCENDIO','BIM/IFC'];
-var state={models:[],elements:[],clashes:[],modelGroups:{},modelTransforms:{},textures:[],selectedTextureId:null,clashDisplayMode:'all',rules:[],selectedElement:null,selectedClash:null,wireframe:false,showClashPins:true};
-var scene,camera,renderer,controls,modelGroup,clashMarkersGroup,raycaster,mouse;
+var state={models:[],elements:[],clashes:[],modelGroups:{},modelTransforms:{},textures:[],selectedTextureId:null,clashDisplayMode:'all',rules:[],selectedElement:null,selectedCutter:null,selectedClash:null,wireframe:false,showClashPins:true,showCutters:false,similarElements:[]};
+var scene,camera,renderer,controls,modelGroup,clashMarkersGroup,booleanCuttersGroup,raycaster,mouse;
 var chartDiscInstance=null,chartFloorInstance=null;
 var pointerDownPos=null,ifcApiInstance=null;
-var clashMarkersContainer=null,_pulseTimer=null,_camTween=null;
+var clashMarkersContainer=null,_pulseTimer=null,_camTween=null,_rebuildTimeout=null;
 var _storeyMapCache={};
 
 /* Regras default */
@@ -708,13 +915,106 @@ state.rules=[
 ];
 
 /* SEÇÃO */
-var sectionState={X:{plane:null,enabled:false,position:0},Y:{plane:null,enabled:false,position:0},Z:{plane:null,enabled:false,position:0}};
-function initSectionPlanes(){if(!renderer)return;renderer.localClippingEnabled=true;['X','Y','Z'].forEach(function(a){var n=a==='X'?new THREE.Vector3(1,0,0):a==='Y'?new THREE.Vector3(0,1,0):new THREE.Vector3(0,0,1);sectionState[a].plane=new THREE.Plane(n,0);});}
+var sectionState={
+  X:{plane:null,enabled:false,position:0,inverted:false},
+  Y:{plane:null,enabled:false,position:0,inverted:false},
+  Z:{plane:null,enabled:false,position:0,inverted:false}
+};
+function initSectionPlanes(){
+  if(!renderer)return;
+  renderer.localClippingEnabled=true;
+  ['X','Y','Z'].forEach(function(a){
+    var n=a==='X'?new THREE.Vector3(1,0,0):a==='Y'?new THREE.Vector3(0,1,0):new THREE.Vector3(0,0,1);
+    sectionState[a].plane=new THREE.Plane(n,0);
+  });
+}
 function toggleSectionPanel(){var p=document.getElementById('sectionPanel'),b=document.getElementById('btnSection');var w=!p.classList.contains('show');p.classList.toggle('show',w);if(b)b.classList.toggle('active',w);}
-function onSectionSlider(a){var v=parseFloat(document.getElementById('sec'+a+'-pos').value);sectionState[a].position=v;document.getElementById('sec'+a+'-val').innerText=v.toFixed(2)+' m';document.getElementById('sec'+a+'-enabled').checked=true;sectionState[a].enabled=true;applySectionPlanes();}
-function applySectionPlanes(){if(!renderer)return;if(!sectionState.X.plane)initSectionPlanes();var active=[];['X','Y','Z'].forEach(function(a){var ss=sectionState[a];var e=document.getElementById('sec'+a+'-enabled').checked;ss.enabled=e;var nx=a==='X'?1:0,ny=a==='Y'?1:0,nz=a==='Z'?1:0;ss.plane.normal.set(nx,ny,nz);ss.plane.constant=-ss.position;if(e)active.push(ss.plane);});state.elements.forEach(function(el){if(!el.mesh||!el.mesh.material)return;var M=Array.isArray(el.mesh.material)?el.mesh.material:[el.mesh.material];M.forEach(function(m){m.clippingPlanes=active.length?active:null;m.needsUpdate=true;});});}
-function clearAllSections(){['X','Y','Z'].forEach(function(a){sectionState[a].enabled=false;sectionState[a].position=0;document.getElementById('sec'+a+'-enabled').checked=false;document.getElementById('sec'+a+'-pos').value=0;document.getElementById('sec'+a+'-val').innerText='0.00 m';});applySectionPlanes();}
-function fitSectionRangeToModel(){if(!state.elements.length)return;var b=new THREE.Box3();state.elements.forEach(function(e){if(e.mesh.visible)b.expandByObject(e.mesh);});if(b.isEmpty())return;var c=new THREE.Vector3();b.getCenter(c);var sz=new THREE.Vector3();b.getSize(sz);['X','Y','Z'].forEach(function(a){var r=a==='X'?sz.x/2:a==='Y'?sz.y/2:sz.z/2;var ca=a==='X'?c.x:a==='Y'?c.y:c.z;var sl=document.getElementById('sec'+a+'-pos');sl.min=(ca-r*1.2).toFixed(2);sl.max=(ca+r*1.2).toFixed(2);sl.value=ca;sectionState[a].position=ca;document.getElementById('sec'+a+'-val').innerText=ca.toFixed(2)+' m';});applySectionPlanes();}
+
+function onSectionSlider(a){
+  var v=parseFloat(document.getElementById('sec'+a+'-pos').value);
+  sectionState[a].position=v;
+  document.getElementById('sec'+a+'-val').innerText=v.toFixed(2)+' m';
+  document.getElementById('sec'+a+'-enabled').checked=true;
+  sectionState[a].enabled=true;
+  applySectionPlanes();
+}
+function toggleSectionInvert(a){
+  sectionState[a].inverted=!sectionState[a].inverted;
+  var chk=document.getElementById('sec'+a+'-enabled');
+  if(chk&&!chk.checked)chk.checked=true;
+  sectionState[a].enabled=true;
+  updateSectionAxisUI(a);
+  applySectionPlanes();
+  showViewportStatus('Corte '+a+(sectionState[a].inverted?' invertido':' normal'));
+}
+function updateSectionAxisUI(a){
+  var container=document.getElementById('sec'+a+'-axis');
+  var btn=document.getElementById('sec'+a+'-invert');
+  if(container)container.classList.toggle('inverted',sectionState[a].inverted);
+  if(btn)btn.classList.toggle('active',sectionState[a].inverted);
+}
+function invertAllActiveSections(){
+  var any=false;
+  ['X','Y','Z'].forEach(function(a){
+    if(sectionState[a].enabled){
+      sectionState[a].inverted=!sectionState[a].inverted;
+      updateSectionAxisUI(a);
+      any=true;
+    }
+  });
+  if(!any){showViewportStatus('Nenhum corte ativo para inverter');return;}
+  applySectionPlanes();
+  showViewportStatus('Cortes ativos invertidos');
+}
+function applySectionPlanes(){
+  if(!renderer)return;
+  if(!sectionState.X.plane)initSectionPlanes();
+  var active=[];
+  ['X','Y','Z'].forEach(function(a){
+    var ss=sectionState[a];
+    var e=document.getElementById('sec'+a+'-enabled').checked;
+    ss.enabled=e;
+    var sign=ss.inverted?-1:1;
+    var nx=a==='X'?sign:0,ny=a==='Y'?sign:0,nz=a==='Z'?sign:0;
+    ss.plane.normal.set(nx,ny,nz);
+    ss.plane.constant=ss.inverted?ss.position:-ss.position;
+    if(e)active.push(ss.plane);
+  });
+  state.elements.forEach(function(el){
+    if(!el.mesh||!el.mesh.material)return;
+    var M=Array.isArray(el.mesh.material)?el.mesh.material:[el.mesh.material];
+    M.forEach(function(m){m.clippingPlanes=active.length?active:null;m.needsUpdate=true;});
+  });
+}
+function clearAllSections(){
+  ['X','Y','Z'].forEach(function(a){
+    sectionState[a].enabled=false;
+    sectionState[a].position=0;
+    sectionState[a].inverted=false;
+    document.getElementById('sec'+a+'-enabled').checked=false;
+    document.getElementById('sec'+a+'-pos').value=0;
+    document.getElementById('sec'+a+'-val').innerText='0.00 m';
+    updateSectionAxisUI(a);
+  });
+  applySectionPlanes();
+}
+function fitSectionRangeToModel(){
+  if(!state.elements.length)return;
+  var b=new THREE.Box3();
+  state.elements.forEach(function(e){if(e.mesh.visible)b.expandByObject(e.mesh);});
+  if(b.isEmpty())return;
+  var c=new THREE.Vector3();b.getCenter(c);
+  var sz=new THREE.Vector3();b.getSize(sz);
+  ['X','Y','Z'].forEach(function(a){
+    var r=a==='X'?sz.x/2:a==='Y'?sz.y/2:sz.z/2;
+    var ca=a==='X'?c.x:a==='Y'?c.y:c.z;
+    var sl=document.getElementById('sec'+a+'-pos');
+    sl.min=(ca-r*1.2).toFixed(2);sl.max=(ca+r*1.2).toFixed(2);sl.value=ca;
+    sectionState[a].position=ca;
+    document.getElementById('sec'+a+'-val').innerText=ca.toFixed(2)+' m';
+  });
+  applySectionPlanes();
+}
 
 /* TRANSFORM */
 function selectTransformModel(id){var c=document.getElementById('transformControls');if(!id){c.style.display='none';return;}c.style.display='block';if(!state.modelTransforms[id])state.modelTransforms[id]={rot:{x:0,y:0,z:0},pos:{x:0,y:0,z:0}};var t=state.modelTransforms[id];['X','Y','Z'].forEach(function(ax){var l=ax.toLowerCase();var r=t.rot[l]||0,p=t.pos[l]||0;var rE=document.getElementById('rot'+ax);if(rE)rE.value=r;var rV=document.getElementById('rot'+ax+'Val');if(rV)rV.innerText=r.toFixed(1)+'°';var pE=document.getElementById('pos'+ax);if(pE)pE.value=p;var pV=document.getElementById('pos'+ax+'Val');if(pV)pV.innerText=p.toFixed(2)+' m';});}
@@ -748,6 +1048,117 @@ function deleteSelectedElement(){if(!state.selectedElement)return;var el=state.s
 function exportEditsJSON(){alert('Salva as edições do modelo atual. Função em construção.');}
 function importEditsJSON(){}
 function clearEditsForCurrentModel(){}
+
+/* ============================================================
+   NOVAS FUNÇÕES: SIMILARES, RENOMEAR, MOVER
+   ============================================================ */
+function updateSimilarTabUI() {
+    var el = state.selectedElement;
+    var info = document.getElementById('simSelectedInfo');
+    var input = document.getElementById('simNewName');
+    var status = document.getElementById('simStatus');
+    
+    if (!el) {
+        if(info) info.innerHTML = '<span style="color:#f87171">Nenhum elemento selecionado.</span>';
+        if(input) input.value = '';
+        if(status) status.innerText = '—';
+        state.similarElements = [];
+        return;
+    }
+    
+    if(info) info.innerHTML = '<b>Atual:</b> ' + (el.name || el.guid) + ' <span style="color:#64748b">(' + el.ifcClass + ')</span>';
+    if(input) input.value = el.name || '';
+    if(status) status.innerText = '—';
+    
+    // Preencher Dropdowns
+    var selDisc = document.getElementById('simNewDisc');
+    var selStorey = document.getElementById('simNewStorey');
+    var selClass = document.getElementById('simNewClass');
+    
+    if(selDisc) {
+        var discs = uniqueValues(state.elements.map(e => e.discipline)).sort();
+        selDisc.innerHTML = discs.map(d => '<option value="'+d+'" '+(d===el.discipline?'selected':'')+'>'+d+'</option>').join('');
+    }
+    if(selStorey) {
+        var storeys = uniqueValues(state.elements.map(e => e.storey)).sort();
+        selStorey.innerHTML = storeys.map(s => '<option value="'+s+'" '+(s===el.storey?'selected':'')+'>'+s+'</option>').join('');
+    }
+    if(selClass) {
+        var classes = uniqueValues(state.elements.map(e => e.ifcClass)).sort();
+        selClass.innerHTML = classes.map(c => '<option value="'+c+'" '+(c===el.ifcClass?'selected':'')+'>'+c+'</option>').join('');
+    }
+}
+
+function findSimilarElements() {
+    if (!state.selectedElement) { alert('Selecione um elemento primeiro.'); return; }
+    var target = state.selectedElement;
+    var matchClass = document.getElementById('simMatchClass').checked;
+    var matchDisc = document.getElementById('simMatchDisc').checked;
+    var matchStorey = document.getElementById('simMatchStorey').checked;
+    var matchName = document.getElementById('simMatchName').checked;
+
+    if (!matchClass && !matchDisc && !matchStorey && !matchName) {
+        alert('Selecione pelo menos um critério.');
+        return;
+    }
+
+    state.similarElements = state.elements.filter(function(e) {
+        if (e === target) return false;
+        var ok = true;
+        if (matchClass && e.ifcClass !== target.ifcClass) ok = false;
+        if (matchDisc && e.discipline !== target.discipline) ok = false;
+        if (matchStorey && e.storey !== target.storey) ok = false;
+        if (matchName && e.name !== target.name) ok = false;
+        return ok;
+    });
+
+    document.getElementById('simStatus').innerHTML = '<span style="color:#fbbf24">' + state.similarElements.length + ' elementos similares encontrados.</span>';
+}
+
+function hideSimilarElements() {
+    if (!state.similarElements.length) { alert('Nenhum similar encontrado. Busque primeiro.'); return; }
+    state.similarElements.forEach(function(e) { e.mesh.visible = false; });
+    buildSpatialTreeUI();
+    showViewportStatus(state.similarElements.length + ' elementos similares ocultados.');
+}
+
+function renameSelectedElement() {
+    if (!state.selectedElement) { alert('Selecione um elemento.'); return; }
+    var newName = document.getElementById('simNewName').value.trim();
+    if (!newName) { alert('O nome não pode ser vazio.'); return; }
+    
+    state.selectedElement.name = newName;
+    state.selectedElement.mesh.userData.name = newName;
+    
+    showSelectedElementBar(state.selectedElement);
+    buildSpatialTreeUI();
+    updateSimilarTabUI(); // Atualiza o nome no painel
+    showViewportStatus('Renomeado para: ' + newName);
+}
+
+function moveElementToFolder() {
+    if (!state.selectedElement) { alert('Selecione um elemento.'); return; }
+    
+    var newDisc = document.getElementById('simNewDisc').value;
+    var newStorey = document.getElementById('simNewStorey').value;
+    var newClass = document.getElementById('simNewClass').value;
+
+    if (!newDisc || !newStorey || !newClass) return;
+
+    var el = state.selectedElement;
+    el.discipline = newDisc;
+    el.storey = newStorey;
+    el.ifcClass = newClass;
+
+    el.mesh.userData.discipline = newDisc;
+    el.mesh.userData.storey = newStorey;
+    el.mesh.userData.ifcClass = newClass;
+
+    buildSpatialTreeUI();
+    updateFloorFilterOptions();
+    showViewportStatus('Elemento movido para ' + newDisc + ' > ' + newStorey + ' > ' + newClass);
+}
+/* ============================================================ */
 
 /* HELPERS IFC */
 function refToId(r){if(r===null||r===undefined)return null;if(typeof r==='number')return r;if(typeof r==='object'){if(r.value!==undefined)return r.value;if(r.expressID!==undefined)return r.expressID;}return null;}
@@ -805,8 +1216,11 @@ function init3DScene(){
   var d2=new THREE.DirectionalLight(0x93c5fd,0.35);d2.position.set(-50,50,-40);scene.add(d2);
   var g=new THREE.GridHelper(200,200,0x1e3a8a,0x1e293b);g.rotation.x=Math.PI/2;scene.add(g);
   scene.add(new THREE.AxesHelper(8));
+  
   modelGroup=new THREE.Group();scene.add(modelGroup);
   clashMarkersGroup=new THREE.Group();scene.add(clashMarkersGroup);
+  booleanCuttersGroup=new THREE.Group();scene.add(booleanCuttersGroup);
+  
   raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();
   clashMarkersContainer=document.getElementById('clashMarkersContainer');
   var cv=renderer.domElement;
@@ -838,7 +1252,38 @@ function updateAxisCompass(){if(!camera)return;var A=[{v:new THREE.Vector3(1,0,0
 /* NAVEGAÇÃO TECLADO */
 var _keysDown={},_flySpeed=2.0;
 function setupKeyboardNavigation(){
-  window.addEventListener('keydown',function(e){var tag=(document.activeElement&&document.activeElement.tagName)||'';if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;_keysDown[e.key.toLowerCase()]=true;});
+  window.addEventListener('keydown',function(e){
+    var tag=(document.activeElement&&document.activeElement.tagName)||'';
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
+    
+    if (state.selectedCutter && !booleanState.holeMode && !measureState.tool && !faceAlignState.active) {
+        var step = e.shiftKey ? 0.5 : 0.1;
+        var moved = false;
+        var c = state.selectedCutter;
+        
+        if (e.key === 'ArrowLeft') { c.position.x -= step; moved = true; }
+        else if (e.key === 'ArrowRight') { c.position.x += step; moved = true; }
+        else if (e.key === 'ArrowDown') { c.position.y -= step; moved = true; }
+        else if (e.key === 'ArrowUp') { c.position.y += step; moved = true; }
+        else if (e.key === 'PageUp' || e.key === 'e' || e.key === 'E') { c.position.z += step; moved = true; }
+        else if (e.key === 'PageDown' || e.key === 'q' || e.key === 'Q') { c.position.z -= step; moved = true; }
+        
+        if (moved) {
+            e.preventDefault();
+            ['X','Y','Z'].forEach(function(ax){
+                var v = c.position[ax.toLowerCase()];
+                var input = document.getElementById('cutter'+ax);
+                if (input) input.value = v;
+                var label = document.getElementById('cutter'+ax+'Val');
+                if (label) label.innerText = v.toFixed(2) + ' m';
+            });
+            debouncedRebuild(c.userData.targetEl);
+            return;
+        }
+    }
+
+    _keysDown[e.key.toLowerCase()]=true;
+  });
   window.addEventListener('keyup',function(e){_keysDown[e.key.toLowerCase()]=false;});
   window.addEventListener('blur',function(){_keysDown={};});
 }
@@ -900,20 +1345,46 @@ function onPointerUp(e){
   if(dx>6||dy>6||dt>500)return;
   if(faceAlignState.active){pickFaceAt(e.clientX,e.clientY);return;}
   if(measureState.tool){pickMeasureAt(e.clientX,e.clientY);return;}
+  if(booleanState.picking){pickBooleanAt(e.clientX,e.clientY);return;}
+  if(booleanState.holeMode){pickHoleAt(e.clientX,e.clientY);return;}
   pickElementAt(e.clientX,e.clientY);
 }
 function pickElementAt(cx,cy){
   var r=renderer.domElement.getBoundingClientRect();
   mouse.x=((cx-r.left)/r.width)*2-1;mouse.y=-((cy-r.top)/r.height)*2+1;
   raycaster.setFromCamera(mouse,camera);
+  
+  if (state.showCutters || state.selectedCutter) {
+      var cutters = booleanCuttersGroup.children.filter(c=>c.visible);
+      var chits = raycaster.intersectObjects(cutters, false);
+      if (chits.length > 0) {
+          selectCutter(chits[0].object);
+          return;
+      }
+  }
+
   var ms=[];state.elements.forEach(function(e){if(e.mesh.visible)ms.push(e.mesh);});
   var h=raycaster.intersectObjects(ms,false);
   if(!h.length){clearSelection();return;}
   var m=h[0].object;
   for(var i=0;i<state.elements.length;i++)if(state.elements[i].mesh===m){selectElement(state.elements[i]);return;}
 }
-function selectElement(el){state.selectedElement=el;showSelectedElementBar(el);updateDimensionsUI();updateEditUI();}
-function clearSelection(){state.selectedElement=null;document.getElementById('selectedElementBar').classList.remove('show');updateDimensionsUI();updateEditUI();}
+function selectElement(el){
+  state.selectedElement=el;
+  if (state.selectedCutter) deselectCutter();
+  showSelectedElementBar(el);
+  updateDimensionsUI();
+  updateEditUI();
+  updateSimilarTabUI();
+}
+function clearSelection(){
+  state.selectedElement=null;
+  if (state.selectedCutter) deselectCutter();
+  document.getElementById('selectedElementBar').classList.remove('show');
+  updateDimensionsUI();
+  updateEditUI();
+  updateSimilarTabUI();
+}
 function showSelectedElementBar(el){document.getElementById('selElemName').innerText=el.name||'—';document.getElementById('selElemDisc').innerText=el.discipline||'—';document.getElementById('selElemGUID').innerText='GUID: '+(el.guid||'-');document.getElementById('selectedElementBar').classList.add('show');}
 function showLoading(s,t){var e=document.getElementById('loadingOverlay');if(t)document.getElementById('loadingText').innerText=t;e.classList.toggle('hidden',!s);}
 var statusTimer=null;
@@ -1125,7 +1596,7 @@ state.models.push({id:id,name:'Demo — Edifício APAVAN',count:state.elements.l
 /* UI MODELOS */
 function updateModelsListUI(){var l=document.getElementById('loadedModelsList');document.getElementById('modelCountBadge').innerText=state.models.length;l.innerHTML='';if(!state.models.length){l.innerHTML='<div style="text-align:center;padding:1.5rem;color:#64748b;font-size:.75rem;border:1px dashed #1e293b;border-radius:.5rem">Nenhum modelo.</div>';return;}state.models.forEach(function(m){var it=document.createElement('div');it.className='model-item';var inf=document.createElement('div');inf.className='info';inf.innerHTML='<div class="name">'+m.name+'</div><div class="count">'+m.count+' elementos</div>';var db=document.createElement('button');db.className='icon-btn';db.innerHTML='<i class="fa-solid fa-trash" style="color:#f87171"></i>';db.onclick=function(){removeModel(m.id);};it.appendChild(inf);it.appendChild(db);l.appendChild(it);});}
 function removeModel(id){if(!confirm('Excluir?'))return;state.elements.filter(function(e){return e.modelId===id;}).forEach(function(e){try{if(e.mesh.geometry)e.mesh.geometry.dispose();if(e.mesh.material)e.mesh.material.dispose();if(e.mesh.parent)e.mesh.parent.remove(e.mesh);}catch(err){}var i=state.elements.indexOf(e);if(i>=0)state.elements.splice(i,1);});var g=state.modelGroups[id];if(g&&g.parent)g.parent.remove(g);delete state.modelGroups[id];delete state.modelTransforms[id];var mi=-1;for(var i=0;i<state.models.length;i++)if(state.models[i].id===id){mi=i;break;}if(mi>=0)state.models.splice(mi,1);updateModelsListUI();buildSpatialTreeUI();updateFloorFilterOptions();refreshTransformModelSelect();}
-function clearAllModels(){if(!state.models.length)return;if(!confirm('Limpar todos?'))return;state.elements.forEach(function(e){try{if(e.mesh.geometry)e.mesh.geometry.dispose();if(e.mesh.material)e.mesh.material.dispose();}catch(err){}});state.elements=[];state.models=[];state.modelGroups={};state.modelTransforms={};modelGroup.clear();if(clashMarkersGroup)clashMarkersGroup.clear();var mc=document.getElementById('clashMarkersContainer');if(mc)mc.innerHTML='';clearSelection();updateModelsListUI();buildSpatialTreeUI();updateFloorFilterOptions();refreshTransformModelSelect();}
+function clearAllModels(){if(!state.models.length)return;if(!confirm('Limpar todos?'))return;state.elements.forEach(function(e){try{if(e.mesh.geometry)e.mesh.geometry.dispose();if(e.mesh.material)e.mesh.material.dispose();}catch(err){}});state.elements=[];state.models=[];state.modelGroups={};state.modelTransforms={};modelGroup.clear();if(clashMarkersGroup)clashMarkersGroup.clear();if(booleanCuttersGroup)booleanCuttersGroup.clear();var mc=document.getElementById('clashMarkersContainer');if(mc)mc.innerHTML='';clearSelection();updateModelsListUI();buildSpatialTreeUI();updateFloorFilterOptions();refreshTransformModelSelect();}
 
 /* ÁRVORE */
 function buildSpatialTreeUI(){var r=document.getElementById('ifcSpatialTree');r.innerHTML='';if(!state.elements.length){r.innerHTML='<div style="color:#64748b;text-align:center;padding:1rem;font-size:.75rem">Nenhum elemento.</div>';return;}var t={};state.elements.forEach(function(e){t[e.discipline]=t[e.discipline]||{};t[e.discipline][e.storey]=t[e.discipline][e.storey]||{};t[e.discipline][e.storey][e.ifcClass]=t[e.discipline][e.storey][e.ifcClass]||[];t[e.discipline][e.storey][e.ifcClass].push(e);});function countAll(o){var c=0;Object.keys(o).forEach(function(k){var v=o[k];if(Array.isArray(v))c+=v.length;else c+=countAll(v);});return c;}Object.keys(t).sort().forEach(function(d){var dn=makeFolder(d,getDisciplineColorCSS(d),countAll(t[d]));Object.keys(t[d]).sort().forEach(function(s){var sn=makeFolder(s,'#22d3ee',countAll(t[d][s]),dn.children);Object.keys(t[d][s]).sort().forEach(function(ty){var tn=makeFolder(ty,'#475569',t[d][s][ty].length,sn.children);t[d][s][ty].forEach(function(el){tn.children.appendChild(makeLeaf(el));});});});r.appendChild(dn.node);});}
@@ -1288,12 +1759,29 @@ function runClashDetection(){
     finally{showLoading(false);}
   },40);
 }
+
 function create3DClashMarker(clash){
   if(!clash.center)return;
   var col=severityColor(clash.severity);
-  var geo=new THREE.SphereGeometry(0.08,8,8);
-  var mat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.9,depthTest:false});
-  var s=new THREE.Mesh(geo,mat);s.position.copy(clash.center);clashMarkersGroup.add(s);clash._sphere=s;
+
+  var geo=new THREE.OctahedronGeometry(0.12,0);
+  var mat=new THREE.MeshBasicMaterial({
+      color:col,
+      transparent:true,
+      opacity:0.6,
+      wireframe:true,
+      depthTest:false
+  });
+  var s=new THREE.Mesh(geo,mat);
+  s.position.copy(clash.center);
+
+  var coreGeo=new THREE.SphereGeometry(0.02,8,8);
+  var coreMat=new THREE.MeshBasicMaterial({color:col,depthTest:false});
+  var core=new THREE.Mesh(coreGeo,coreMat);
+  s.add(core);
+
+  clashMarkersGroup.add(s);clash._sphere=s;
+
   var p=document.createElement('div');
   p.className='clash-pin-3d sev-'+clash.severity;p.dataset.clashId=clash.id;
   p.innerHTML='<div class="pin-bubble">⚠ '+clash.id+'</div>';
@@ -1306,7 +1794,33 @@ function create3DClashMarker(clash){
   r.style.display=visible?'block':'none';
   s.visible=visible;
 }
-function updateClashMarkersPosition(){if(!renderer||!camera||!clashMarkersContainer)return;var r=renderer.domElement.getBoundingClientRect();state.clashes.forEach(function(c){if(!c.center||c._pinVisible===false)return;var v=c.center.clone().project(camera);var x=(v.x*0.5+0.5)*r.width;var y=(-v.y*0.5+0.5)*r.height;var vis=v.z<1&&v.z>-1;if(c._htmlMarker){c._htmlMarker.style.left=x+'px';c._htmlMarker.style.top=(y-6)+'px';c._htmlMarker.style.display=vis?'block':'none';}if(c._htmlRing){c._htmlRing.style.left=x+'px';c._htmlRing.style.top=y+'px';c._htmlRing.style.display=vis?'block':'none';}});}
+
+function updateClashMarkersPosition(){
+  if(!renderer||!camera||!clashMarkersContainer)return;
+  var r=renderer.domElement.getBoundingClientRect();
+  state.clashes.forEach(function(c, index){
+      if(!c.center||c._pinVisible===false)return;
+      var v=c.center.clone().project(camera);
+      var x=(v.x*0.5+0.5)*r.width;
+      var y=(-v.y*0.5+0.5)*r.height;
+      var vis=v.z<1&&v.z>-1;
+
+      if(c._htmlMarker){
+          var offset = (index % 4);
+          var ox = offset * 12;
+          var oy = offset * -12;
+          c._htmlMarker.style.left=(x + ox)+'px';
+          c._htmlMarker.style.top=(y - 6 + oy)+'px';
+          c._htmlMarker.style.display=vis?'block':'none';
+      }
+      if(c._htmlRing){
+          c._htmlRing.style.left=x+'px';
+          c._htmlRing.style.top=y+'px';
+          c._htmlRing.style.display=vis?'block':'none';
+      }
+  });
+}
+
 function focusClash(id){var c=null;for(var i=0;i<state.clashes.length;i++)if(state.clashes[i].id===id){c=state.clashes[i];break;}if(!c)return;state.selectedClash=c;var ct=c.center.clone();var cd=new THREE.Vector3().subVectors(camera.position,controls.target).normalize();if(cd.lengthSq()<0.001)cd.set(0.6,-0.6,0.5).normalize();tweenCamera(ct.clone().add(cd.multiplyScalar(3)),ct,600);updateClashPinsVisibility();}
 function updateClashListUI(){var l=document.getElementById('clashesList');document.getElementById('clashCountBadge').innerText=state.clashes.length;var fs=document.getElementById('clashSevFilter').value;var F=state.clashes.filter(function(c){return fs==='ALL'||c.severity===fs;});l.innerHTML='';if(!F.length){l.innerHTML='<div style="text-align:center;padding:2rem 1rem;color:#64748b;font-size:.75rem">'+(state.clashes.length?'Nenhum conflito com filtro.':'Nenhum teste executado.')+'</div>';return;}F.forEach(function(c){var it=document.createElement('div');it.className='clash-item';it.dataset.clashId=c.id;it.style.cssText='background:#020617;border:1px solid #1e293b;border-radius:.5rem;padding:.5rem;cursor:pointer;margin-bottom:.5rem';var col=severityColor(c.severity);it.innerHTML='<div style="display:flex;gap:.5rem;margin-bottom:.25rem"><span style="width:8px;height:8px;border-radius:50%;background:'+col+'"></span><span style="font-family:monospace;font-size:.65rem;font-weight:700;color:#cbd5e1">'+c.id+'</span><span style="background:'+col+'22;color:'+col+';font-size:.55rem;padding:.1rem .35rem;border-radius:.25rem;margin-left:auto">'+c.severity+'</span></div><div style="font-size:.65rem;color:#94a3b8">A: <b>'+c.elemA.disc+'</b></div><div style="font-size:.65rem;color:#94a3b8">B: <b>'+c.elemB.disc+'</b></div><div style="font-size:.6rem;color:#64748b;margin-top:.25rem">'+c.floor+' • '+c.overlap+'</div>';it.onclick=function(){focusClash(c.id);};l.appendChild(it);});}
 
@@ -1332,8 +1846,655 @@ function exportQtyCSV(detailed){if(!qtyState.details.length){alert('Extraia prim
 function exportQtyPDF(){alert('Use o botão PDF na barra lateral do Quantitativo.');}
 function exportPDFReport(){alert('Relatório PDF de conflitos: ver aba Conflitos.');}
 
+/* =====================================================================
+   CSG INLINE (BSP) — Booleanas
+   ===================================================================== */
+var CSG = (function() {
+  var EPS = 1e-5;
+  var COPLANAR = 0, FRONT = 1, BACK = 2, SPANNING = 3;
+
+  function Vertex(pos, normal) {
+    this.pos = pos.clone();
+    this.normal = normal ? normal.clone() : new THREE.Vector3(0,0,1);
+  }
+  Vertex.prototype.clone = function() { return new Vertex(this.pos, this.normal); };
+  Vertex.prototype.flip = function() { this.normal.negate(); };
+  Vertex.interpolate = function(v1, v2, t) {
+    return new Vertex(
+      new THREE.Vector3().lerpVectors(v1.pos, v2.pos, t),
+      new THREE.Vector3().lerpVectors(v1.normal, v2.normal, t).normalize()
+    );
+  };
+
+  function Plane(n, w) { this.normal = n.clone(); this.w = w; }
+  Plane.fromPoints = function(a, b, c) {
+    var n = new THREE.Vector3().subVectors(b, a).cross(new THREE.Vector3().subVectors(c, a));
+    if (n.lengthSq() === 0) {
+      n.set(0, 0, 1);
+    } else {
+      n.normalize();
+    }
+    return new Plane(n, n.dot(a));
+  };
+  Plane.prototype.clone = function() { return new Plane(this.normal, this.w); };
+  Plane.prototype.flip = function() { this.normal.negate(); this.w = -this.w; };
+  Plane.prototype.splitPolygon = function(poly, cf, cb, f, b) {
+    var pType = 0, types = [];
+    for (var i = 0; i < poly.vertices.length; i++) {
+      var t = this.normal.dot(poly.vertices[i].pos) - this.w;
+      var ty = (t < -EPS) ? BACK : (t > EPS) ? FRONT : COPLANAR;
+      pType |= ty;
+      types.push(ty);
+    }
+    if (pType === COPLANAR) {
+      (this.normal.dot(poly.plane.normal) > 0 ? cf : cb).push(poly);
+    } else if (pType === FRONT) {
+      f.push(poly);
+    } else if (pType === BACK) {
+      b.push(poly);
+    } else {
+      var fp = [], bp = [];
+      for (var i2 = 0; i2 < poly.vertices.length; i2++) {
+        var j = (i2 + 1) % poly.vertices.length;
+        var ti = types[i2], tj = types[j];
+        var vi = poly.vertices[i2], vj = poly.vertices[j];
+        if (ti !== BACK) fp.push(vi);
+        if (ti !== FRONT) bp.push(ti !== BACK ? vi.clone() : vi);
+        if ((ti | tj) === SPANNING) {
+          var denom = this.normal.dot(new THREE.Vector3().subVectors(vj.pos, vi.pos));
+          var tt = (this.w - this.normal.dot(vi.pos)) / denom;
+          var v = Vertex.interpolate(vi, vj, tt);
+          fp.push(v); bp.push(v.clone());
+        }
+      }
+      if (fp.length >= 3) f.push(new Polygon(fp, poly.shared));
+      if (bp.length >= 3) b.push(new Polygon(bp, poly.shared));
+    }
+  };
+
+  function Polygon(vertices, shared) {
+    this.vertices = vertices || [];
+    this.shared = shared;
+    if (this.vertices.length >= 3) this.plane = Plane.fromPoints(this.vertices[0].pos, this.vertices[1].pos, this.vertices[2].pos);
+  }
+  Polygon.prototype.clone = function() { return new Polygon(this.vertices.map(function(v){return v.clone();}), this.shared); };
+  Polygon.prototype.flip = function() { this.vertices.reverse().forEach(function(v){v.flip();}); this.plane.flip(); };
+
+  function Node(polys) {
+    this.plane = null; this.front = null; this.back = null; this.polygons = [];
+    if (polys && polys.length) this.build(polys);
+  }
+  Node.prototype.clone = function() {
+    var n = new Node();
+    n.plane = this.plane ? this.plane.clone() : null;
+    n.front = this.front ? this.front.clone() : null;
+    n.back = this.back ? this.back.clone() : null;
+    n.polygons = this.polygons.map(function(p){return p.clone();});
+    return n;
+  };
+  Node.prototype.invert = function() {
+    this.polygons.forEach(function(p){p.flip();});
+    if (this.plane) this.plane.flip();
+    if (this.front) this.front.invert();
+    if (this.back) this.back.invert();
+    var t = this.front; this.front = this.back; this.back = t;
+  };
+  Node.prototype.clipPolygons = function(polys) {
+    if (!this.plane) return polys.slice();
+    var f = [], b = [];
+    for (var i = 0; i < polys.length; i++) this.plane.splitPolygon(polys[i], f, b, f, b);
+    if (this.front) f = this.front.clipPolygons(f);
+    if (this.back) b = this.back.clipPolygons(b); else b = [];
+    return f.concat(b);
+  };
+  Node.prototype.clipTo = function(bsp) {
+    this.polygons = bsp.clipPolygons(this.polygons);
+    if (this.front) this.front.clipTo(bsp);
+    if (this.back) this.back.clipTo(bsp);
+  };
+  Node.prototype.allPolygons = function() {
+    var r = this.polygons.slice();
+    if (this.front) r = r.concat(this.front.allPolygons());
+    if (this.back) r = r.concat(this.back.allPolygons());
+    return r;
+  };
+  Node.prototype.build = function(polys) {
+    if (!polys.length) return;
+    if (!this.plane) this.plane = polys[0].plane.clone();
+    var f = [], b = [];
+    for (var i = 0; i < polys.length; i++) this.plane.splitPolygon(polys[i], this.polygons, this.polygons, f, b);
+    if (f.length) { if (!this.front) this.front = new Node(); this.front.build(f); }
+    if (b.length) { if (!this.back) this.back = new Node(); this.back.build(b); }
+  };
+
+  function fromGeometry(geo) {
+    var pos = geo.attributes.position;
+    var nor = geo.attributes.normal;
+    var idx = geo.index;
+    var triCount = idx ? Math.floor(idx.count / 3) : Math.floor(pos.count / 3);
+    var polys = [];
+    
+    for (var i = 0; i < triCount; i++) {
+      var a = idx ? idx.getX(i*3) : i*3;
+      var b = idx ? idx.getX(i*3+1) : i*3+1;
+      var c = idx ? idx.getX(i*3+2) : i*3+2;
+
+      var pA = new THREE.Vector3().fromBufferAttribute(pos,a);
+      var pB = new THREE.Vector3().fromBufferAttribute(pos,b);
+      var pC = new THREE.Vector3().fromBufferAttribute(pos,c);
+
+      var nA = nor ? new THREE.Vector3().fromBufferAttribute(nor,a) : null;
+      var nB = nor ? new THREE.Vector3().fromBufferAttribute(nor,b) : null;
+      var nC = nor ? new THREE.Vector3().fromBufferAttribute(nor,c) : null;
+
+      if (nA) {
+        var cross = new THREE.Vector3().subVectors(pB, pA).cross(new THREE.Vector3().subVectors(pC, pA));
+        if (cross.dot(nA) < 0) {
+          var tempP = pB; pB = pC; pC = tempP;
+          var tempN = nB; nB = nC; nC = tempN;
+        }
+      }
+
+      var va = new Vertex(pA, nA);
+      var vb = new Vertex(pB, nB);
+      var vc = new Vertex(pC, nC);
+
+      var crossAfter = new THREE.Vector3().subVectors(vb.pos, va.pos).cross(new THREE.Vector3().subVectors(vc.pos, va.pos));
+      if (crossAfter.lengthSq() < 1e-10) continue;
+
+      polys.push(new Polygon([va, vb, vc]));
+    }
+    return new Node(polys);
+  }
+
+  function toGeometry(bsp) {
+    var polys = bsp.allPolygons();
+    var verts = [], norms = [];
+    for (var i = 0; i < polys.length; i++) {
+      var vs = polys[i].vertices;
+      if (vs.length < 3) continue;
+      var v0 = vs[0];
+      for (var j = 1; j < vs.length - 1; j++) {
+        var v1 = vs[j], v2 = vs[j + 1];
+        var ab = new THREE.Vector3().subVectors(v1.pos, v0.pos);
+        var ac = new THREE.Vector3().subVectors(v2.pos, v0.pos);
+        if (new THREE.Vector3().crossVectors(ab, ac).length() < 1e-8) continue;
+        [v0, v1, v2].forEach(function(v){
+          verts.push(v.pos.x, v.pos.y, v.pos.z);
+          norms.push(v.normal.x, v.normal.y, v.normal.z);
+        });
+      }
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(norms, 3));
+    return geo;
+  }
+
+  return {
+    fromGeometry: fromGeometry,
+    toGeometry: toGeometry,
+    subtract: function(a, b) {
+      var a2 = a.clone(), b2 = b.clone();
+      a2.invert();
+      a2.clipTo(b2);
+      b2.clipTo(a2);
+      b2.invert();
+      b2.clipTo(a2);
+      b2.invert();
+      a2.build(b2.allPolygons());
+      a2.invert();
+      return a2;
+    }
+  };
+})();
+
+/* =====================================================================
+   ESTADO BOOLEANO E EDIÇÃO DINÂMICA
+   ===================================================================== */
+var booleanState = {
+  picking: null,
+  trimA: null,
+  trimB: null,
+  holeMode: null,
+  holeShape: 'rect',
+  holeClick: null
+};
+
+function pickBooleanElement(slot) {
+  if (measureState.tool) clearMeasurements();
+  if (faceAlignState.active) toggleFaceAlignMode();
+  if (booleanState.holeMode) cancelHoleMode();
+  if (state.selectedCutter) deselectCutter();
+  booleanState.picking = slot;
+  if (renderer) renderer.domElement.style.cursor = 'crosshair';
+  showViewportStatus('Clique no elemento ' + slot);
+  updateBooleanUI();
+}
+function pickBooleanAt(cx, cy) {
+  var r = renderer.domElement.getBoundingClientRect();
+  var mx = ((cx - r.left) / r.width) * 2 - 1;
+  var my = -((cy - r.top) / r.height) * 2 + 1;
+  raycaster.setFromCamera({x: mx, y: my}, camera);
+  var ms = []; state.elements.forEach(function(e){ if (e.mesh.visible) ms.push(e.mesh); });
+  var hits = raycaster.intersectObjects(ms, false);
+  if (!hits.length) return;
+  var mesh = hits[0].object, el = null;
+  for (var i = 0; i < state.elements.length; i++) if (state.elements[i].mesh === mesh) { el = state.elements[i]; break; }
+  if (!el) return;
+  if (booleanState.picking === 'A') booleanState.trimA = el;
+  else if (booleanState.picking === 'B') booleanState.trimB = el;
+  booleanState.picking = null;
+  if (renderer) renderer.domElement.style.cursor = 'default';
+  updateBooleanUI();
+}
+function swapBooleanElements() {
+  var t = booleanState.trimA; booleanState.trimA = booleanState.trimB; booleanState.trimB = t;
+  updateBooleanUI();
+}
+function updateBooleanUI() {
+  var la = document.getElementById('boolA-label');
+  var lb = document.getElementById('boolB-label');
+  var btn = document.getElementById('btnApplyTrim');
+  if (la) la.innerText = booleanState.trimA ? 'A: ' + (booleanState.trimA.name || booleanState.trimA.guid).substring(0, 20) : 'Selecionar A (será cortado)';
+  if (lb) lb.innerText = booleanState.trimB ? 'B: ' + (booleanState.trimB.name || booleanState.trimB.guid).substring(0, 20) : 'Selecionar B (cortador)';
+  if (btn) {
+    btn.disabled = !(booleanState.trimA && booleanState.trimB && booleanState.trimA !== booleanState.trimB);
+    btn.style.opacity = btn.disabled ? '0.4' : '1';
+  }
+}
+
+function updateUndoBtn() {
+  var b = document.getElementById('btnUndoBool');
+  if (!b) return;
+  var hasCutters = booleanCuttersGroup && booleanCuttersGroup.children.length > 0;
+  b.disabled = !hasCutters;
+  b.style.opacity = b.disabled ? '0.4' : '1';
+}
+
+/* RECONSTRUÇÃO NÃO-DESTRUTIVA DO CSG */
+function rebuildBoolean(targetEl) {
+  if (!targetEl || !targetEl.mesh || !targetEl.mesh.userData._origGeometry) return;
+  
+  var targetGeo = targetEl.mesh.userData._origGeometry.clone();
+  var worldMatrix = targetEl.mesh.matrixWorld.clone();
+  targetGeo.applyMatrix4(worldMatrix);
+
+  var aBSP = CSG.fromGeometry(targetGeo);
+
+  var cutters = targetEl.mesh.userData._cutters || [];
+  cutters.forEach(function(cutter) {
+    if (!cutter.visible && !cutter.userData.forceCSG) {
+    }
+    cutter.updateMatrixWorld(true);
+    var cutterGeo = cutter.geometry.clone();
+    cutterGeo.applyMatrix4(cutter.matrixWorld);
+    var bBSP = CSG.fromGeometry(cutterGeo);
+    aBSP = CSG.subtract(aBSP, bBSP);
+  });
+
+  var resultGeo = CSG.toGeometry(aBSP);
+  if (resultGeo.attributes.position.count === 0) {
+      console.warn("CSG resultou em vazio para", targetEl.name);
+      return;
+  }
+
+  var invMatrix = new THREE.Matrix4().copy(worldMatrix).invert();
+  resultGeo.applyMatrix4(invMatrix);
+
+  targetEl.mesh.geometry.dispose();
+  targetEl.mesh.geometry = resultGeo;
+  targetEl.mesh.geometry.computeBoundingBox();
+  targetEl.mesh.geometry.computeBoundingSphere();
+
+  if (state.selectedElement === targetEl) updateDimensionsUI();
+}
+
+function debouncedRebuild(el) {
+  if (_rebuildTimeout) clearTimeout(_rebuildTimeout);
+  _rebuildTimeout = setTimeout(function() {
+    rebuildBoolean(el);
+  }, 60);
+}
+
+function selectCutter(cutter) {
+  if (state.selectedCutter) {
+    state.selectedCutter.material.opacity = state.showCutters ? 0.3 : 0;
+    state.selectedCutter.material.depthWrite = true;
+  }
+  state.selectedCutter = cutter;
+  state.selectedElement = null;
+  document.getElementById('selectedElementBar').classList.remove('show');
+  
+  cutter.material.opacity = 0.8;
+  cutter.material.depthWrite = false;
+  
+  var panel = document.getElementById('cutterEditPanel');
+  var info = document.getElementById('cutterEditInfo');
+  if (panel) panel.style.display = 'block';
+  if (info) info.innerText = 'Cortador ativo: ' + (cutter.userData.targetEl.name || cutter.userData.targetEl.guid).substring(0,20);
+  
+  ['X','Y','Z'].forEach(function(ax){
+      var l = ax.toLowerCase();
+      var v = cutter.position[l];
+      var input = document.getElementById('cutter'+ax);
+      if (input) input.value = v;
+      var label = document.getElementById('cutter'+ax+'Val');
+      if (label) label.innerText = v.toFixed(2) + ' m';
+  });
+
+  var wIn = document.getElementById('cutterWidth');
+  var hIn = document.getElementById('cutterHeight');
+  var wLbl = document.getElementById('cutterWidthLabel');
+  var hLbl = document.getElementById('cutterHeightLabel');
+  if (wIn) wIn.value = cutter.userData.width || 0.5;
+  if (hIn) hIn.value = cutter.userData.height || 0.5;
+  if (wLbl) wLbl.innerText = cutter.userData.shape === 'circle' ? 'Diâmetro (m)' : 'Largura (m)';
+  if (hLbl) hLbl.innerText = 'Altura (m)';
+  if (hIn) hIn.disabled = (cutter.userData.shape === 'circle');
+}
+
+function deselectCutter() {
+  if (state.selectedCutter) {
+    state.selectedCutter.material.opacity = state.showCutters ? 0.3 : 0;
+    state.selectedCutter.material.depthWrite = true;
+    if (!state.showCutters) state.selectedCutter.visible = false;
+    state.selectedCutter = null;
+  }
+  document.getElementById('cutterEditPanel').style.display = 'none';
+}
+
+function onCutterSlider(axis) {
+  if (!state.selectedCutter) return;
+  var v = parseFloat(document.getElementById('cutter'+axis).value);
+  state.selectedCutter.position[axis.toLowerCase()] = v;
+  document.getElementById('cutter'+axis+'Val').innerText = v.toFixed(2) + ' m';
+  debouncedRebuild(state.selectedCutter.userData.targetEl);
+}
+
+function onCutterSizeChange() {
+  if (!state.selectedCutter) return;
+  var w = parseFloat(document.getElementById('cutterWidth').value);
+  var h = parseFloat(document.getElementById('cutterHeight').value);
+  if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) return;
+  
+  var c = state.selectedCutter;
+  c.userData.width = w;
+  c.userData.height = (c.userData.shape === 'circle') ? w : h;
+  
+  var depth = 100;
+  var geo;
+  if (c.userData.shape === 'circle') {
+      geo = new THREE.CylinderGeometry(w/2, w/2, depth, 32);
+      geo.rotateX(Math.PI / 2);
+  } else {
+      geo = new THREE.BoxGeometry(w, h, depth);
+  }
+  
+  c.geometry.dispose();
+  c.geometry = geo;
+  
+  debouncedRebuild(c.userData.targetEl);
+}
+
+function toggleShowCutters() {
+  state.showCutters = !state.showCutters;
+  var btn = document.getElementById('btnToggleCutters');
+  if (btn) {
+      btn.style.background = state.showCutters ? '#059669' : '#0891b2';
+      btn.innerHTML = state.showCutters ? '<i class="fa-solid fa-eye-slash"></i> Ocultar Cortadores' : '<i class="fa-solid fa-eye"></i> Exibir Cortadores';
+  }
+  booleanCuttersGroup.children.forEach(function(c) {
+      if (c === state.selectedCutter) return;
+      c.visible = state.showCutters;
+      c.material.opacity = state.showCutters ? 0.3 : 0;
+  });
+}
+
+/* CRIAR CORTADORES (SHAFTS / FUROS) */
+function createCutterMesh(shape, width, height, rotationDeg, point, normal, targetEl) {
+  var depth = 100;
+  var geo;
+  if (shape === 'circle') {
+    var radius = width / 2;
+    geo = new THREE.CylinderGeometry(radius, radius, depth, 32);
+    geo.rotateX(Math.PI / 2);
+  } else {
+    geo = new THREE.BoxGeometry(width, height, depth);
+  }
+
+  var dir = normal.clone().negate();
+  var quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir);
+  if (rotationDeg && shape === 'rect') {
+    var rotQ = new THREE.Quaternion().setFromAxisAngle(dir, rotationDeg * Math.PI / 180);
+    quat.premultiply(rotQ);
+  }
+
+  var mat = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.3, depthWrite: false, side: THREE.DoubleSide });
+  var mesh = new THREE.Mesh(geo, mat);
+  mesh.quaternion.copy(quat);
+  mesh.position.copy(point);
+  mesh.visible = state.showCutters;
+  mesh.userData.isCutter = true;
+  mesh.userData.targetEl = targetEl;
+  mesh.userData.shape = shape;
+  mesh.userData.width = width;
+  mesh.userData.height = (shape === 'circle') ? width : height;
+  mesh.userData.rotationDeg = rotationDeg;
+
+  booleanCuttersGroup.add(mesh);
+  if (!targetEl.mesh.userData._origGeometry) targetEl.mesh.userData._origGeometry = targetEl.mesh.geometry.clone();
+  if (!targetEl.mesh.userData._cutters) targetEl.mesh.userData._cutters = [];
+  targetEl.mesh.userData._cutters.push(mesh);
+
+  updateUndoBtn();
+  return mesh;
+}
+
+function applyBooleanTrim() {
+  if (!booleanState.trimA || !booleanState.trimB) return;
+  if (booleanState.trimA === booleanState.trimB) { alert('A e B devem ser diferentes.'); return; }
+  showLoading(true, 'Aplicando corte...');
+  setTimeout(function() {
+    try {
+      var targetEl = booleanState.trimA;
+      var elB = booleanState.trimB;
+      
+      if (!targetEl.mesh.userData._origGeometry) targetEl.mesh.userData._origGeometry = targetEl.mesh.geometry.clone();
+      
+      elB.mesh.updateMatrixWorld(true);
+      var wm = elB.mesh.matrixWorld.clone();
+      var geo = elB.mesh.geometry.clone();
+      geo.applyMatrix4(wm);
+      
+      geo.computeBoundingBox();
+      var center = new THREE.Vector3();
+      geo.boundingBox.getCenter(center);
+      geo.translate(-center.x, -center.y, -center.z);
+      
+      var mat = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.3, depthWrite: false, side: THREE.DoubleSide });
+      var cutterMesh = new THREE.Mesh(geo, mat);
+      cutterMesh.position.copy(center);
+      cutterMesh.visible = state.showCutters;
+      cutterMesh.userData.isCutter = true;
+      cutterMesh.userData.targetEl = targetEl;
+      cutterMesh.userData.shape = 'custom';
+      
+      booleanCuttersGroup.add(cutterMesh);
+      if (!targetEl.mesh.userData._cutters) targetEl.mesh.userData._cutters = [];
+      targetEl.mesh.userData._cutters.push(cutterMesh);
+      
+      rebuildBoolean(targetEl);
+      selectCutter(cutterMesh);
+      
+      booleanState.trimA = null;
+      booleanState.trimB = null;
+      updateBooleanUI();
+      updateUndoBtn();
+      showViewportStatus('Corte aplicado. Ajuste a posição na aba lateral.');
+    } catch (err) { console.error(err); alert('Erro: ' + err.message); }
+    finally { showLoading(false); }
+  }, 40);
+}
+
+function startHole(type) {
+  if (measureState.tool) clearMeasurements();
+  if (faceAlignState.active) toggleFaceAlignMode();
+  if (booleanState.picking) { booleanState.picking = null; if (renderer) renderer.domElement.style.cursor = 'default'; }
+  if (state.selectedCutter) deselectCutter();
+  booleanState.holeMode = type;
+  if (renderer) renderer.domElement.style.cursor = 'crosshair';
+  var hints = {
+    'slab':   'Clique na face superior da laje para abrir um shaft.',
+    'beam':   'Clique na face lateral da viga para abrir um furo.',
+    'column': 'Clique na face lateral do pilar para abrir um furo.'
+  };
+  var h = document.getElementById('holeHint');
+  if (h) h.innerText = hints[type] || 'Clique num elemento.';
+  document.querySelectorAll('#tab-content-intersect .hole-btn').forEach(function(b) {
+    b.classList.toggle('active', b.id === 'hole-btn-' + type);
+  });
+  var cb = document.getElementById('btnCancelHole');
+  if (cb) cb.style.display = 'block';
+}
+
+function cancelHoleMode() {
+  booleanState.holeMode = null;
+  booleanState.holeClick = null;
+  if (renderer) renderer.domElement.style.cursor = 'default';
+  var h = document.getElementById('holeHint');
+  if (h) h.innerText = 'Selecione um modo e clique no elemento hospedeiro.';
+  document.querySelectorAll('#tab-content-intersect .hole-btn').forEach(function(b) { b.classList.remove('active'); });
+  var cb = document.getElementById('btnCancelHole');
+  if (cb) cb.style.display = 'none';
+}
+
+function pickHoleAt(cx, cy) {
+  if (!booleanState.holeMode) return;
+  var r = renderer.domElement.getBoundingClientRect();
+  var mx = ((cx - r.left) / r.width) * 2 - 1;
+  var my = -((cy - r.top) / r.height) * 2 + 1;
+  raycaster.setFromCamera({x: mx, y: my}, camera);
+  var ms = []; state.elements.forEach(function(e){ if (e.mesh.visible) ms.push(e.mesh); });
+  var hits = raycaster.intersectObjects(ms, false);
+  if (!hits.length) return;
+  var hit = hits[0], el = null;
+  for (var i = 0; i < state.elements.length; i++) if (state.elements[i].mesh === hit.object) { el = state.elements[i]; break; }
+  if (!el) return;
+
+  var mode = booleanState.holeMode;
+  var s = ((el.ifcClass || '') + ' ' + (el.name || '')).toLowerCase();
+  if (mode === 'slab' && !/slab|laje/.test(s)) { if (!confirm('Elemento não parece ser laje. Continuar?')) return; }
+  else if (mode === 'beam' && !/beam|viga/.test(s)) { if (!confirm('Elemento não parece ser viga. Continuar?')) return; }
+  else if (mode === 'column' && !/column|pilar/.test(s)) { if (!confirm('Elemento não parece ser pilar. Continuar?')) return; }
+
+  var fn = hit.face ? hit.face.normal.clone() : new THREE.Vector3(0,0,1);
+  fn.applyMatrix3(new THREE.Matrix3().getNormalMatrix(hit.object.matrixWorld)).normalize();
+  booleanState.holeClick = { point: hit.point.clone(), normal: fn, element: el };
+  openHoleModal();
+}
+
+function openHoleModal() {
+  var m = document.getElementById('holeModal');
+  if (m) m.classList.add('show');
+  updateHoleModalUI();
+}
+function closeHoleModal() {
+  var m = document.getElementById('holeModal');
+  if (m) m.classList.remove('show');
+  booleanState.holeClick = null;
+}
+function setHoleShape(s) { booleanState.holeShape = s; updateHoleModalUI(); }
+function updateHoleModalUI() {
+  var shape = booleanState.holeShape;
+  var rBtn = document.getElementById('holeShapeRect');
+  var cBtn = document.getElementById('holeShapeCircle');
+  if (rBtn) { rBtn.style.background = shape === 'rect' ? '#2563eb' : '#1e293b'; rBtn.style.color = shape === 'rect' ? '#fff' : '#94a3b8'; }
+  if (cBtn) { cBtn.style.background = shape === 'circle' ? '#2563eb' : '#1e293b'; cBtn.style.color = shape === 'circle' ? '#fff' : '#94a3b8'; }
+  var hl = document.getElementById('holeHeightLabel');
+  var hi = document.getElementById('holeHeight');
+  if (shape === 'circle') { if (hl) hl.innerText = 'Diâmetro (m)'; if (hi) hi.disabled = true; }
+  else { if (hl) hl.innerText = 'Altura (m)'; if (hi) hi.disabled = false; }
+}
+
+function applyHole() {
+  if (!booleanState.holeClick) return;
+  var shape = booleanState.holeShape;
+  var width = parseFloat(document.getElementById('holeWidth').value) || 0.5;
+  var height = shape === 'circle' ? width : (parseFloat(document.getElementById('holeHeight').value) || 0.5);
+  var rotation = parseFloat(document.getElementById('holeRotation').value) || 0;
+  if (width <= 0 || height <= 0) { alert('Dimensões inválidas.'); return; }
+  var hc = booleanState.holeClick;
+  showLoading(true, 'Abrindo vão...');
+  setTimeout(function() {
+    try {
+      var cutterMesh = createCutterMesh(shape, width, height, rotation, hc.point, hc.normal, hc.element);
+      rebuildBoolean(hc.element);
+      closeHoleModal();
+      cancelHoleMode();
+      selectCutter(cutterMesh);
+      showViewportStatus('Furo criado. Use os controles para ajustar.');
+    } finally { showLoading(false); }
+  }, 40);
+}
+
+/* HISTÓRICO E RESTAURAÇÃO */
+function undoLastBoolean() {
+  if (!booleanCuttersGroup || booleanCuttersGroup.children.length === 0) return;
+  var lastCutter = booleanCuttersGroup.children[booleanCuttersGroup.children.length - 1];
+  var targetEl = lastCutter.userData.targetEl;
+  if (targetEl && targetEl.mesh.userData._cutters) {
+      var idx = targetEl.mesh.userData._cutters.indexOf(lastCutter);
+      if (idx >= 0) targetEl.mesh.userData._cutters.splice(idx, 1);
+      if (state.selectedCutter === lastCutter) deselectCutter();
+      booleanCuttersGroup.remove(lastCutter);
+      lastCutter.geometry.dispose();
+      lastCutter.material.dispose();
+      rebuildBoolean(targetEl);
+      showViewportStatus('Último furo desfeito.');
+  }
+  updateUndoBtn();
+}
+function restoreAllGeometry() {
+  if (!confirm('Restaurar TODOS os cortes?')) return;
+  var elementsChanged = new Set();
+  booleanCuttersGroup.children.forEach(function(c) {
+      if (c.userData.targetEl) elementsChanged.add(c.userData.targetEl);
+      c.geometry.dispose();
+      c.material.dispose();
+  });
+  booleanCuttersGroup.clear();
+  deselectCutter();
+  
+  elementsChanged.forEach(function(el) {
+      if (el.mesh.userData._origGeometry) {
+          el.mesh.geometry.dispose();
+          el.mesh.geometry = el.mesh.userData._origGeometry.clone();
+          el.mesh.userData._cutters = [];
+      }
+  });
+  updateUndoBtn();
+  showViewportStatus('Todos os cortes foram removidos.');
+}
+
 /* ABAS */
-function switchLeftTab(t){var tabs=['models','transform','edit','tree','appearance','dimension','measure','qty','rules'];tabs.forEach(function(x){var c=document.getElementById('tab-content-'+x);if(c)c.classList.toggle('active',x===t);var b=document.getElementById('tab-btn-'+x);if(b)b.classList.toggle('active',x===t);});if(t==='dimension')updateDimensionsUI();if(t==='transform')refreshTransformModelSelect();if(t==='edit')updateEditUI();if(t==='measure')activateMeasure('volume');if(t==='rules')initRulesUI();if(isMobile())closeAllSidebars();}
+function switchLeftTab(t){
+  var tabs=['models','transform','edit','similar','tree','appearance','dimension','measure','qty','rules','intersect'];
+  tabs.forEach(function(x){
+    var c=document.getElementById('tab-content-'+x);
+    if(c)c.classList.toggle('active',x===t);
+    var b=document.getElementById('tab-btn-'+x);
+    if(b)b.classList.toggle('active',x===t);
+  });
+  if(t==='dimension')updateDimensionsUI();
+  if(t==='transform')refreshTransformModelSelect();
+  if(t==='edit')updateEditUI();
+  if(t==='similar')updateSimilarTabUI();
+  if(t==='measure')activateMeasure('volume');
+  if(t==='rules')initRulesUI();
+  if(t==='intersect')updateBooleanUI();
+  if(isMobile())closeAllSidebars();
+}
 function switchRightTab(t){['clashes','dash'].forEach(function(x){var c=document.getElementById('tab-content-'+x);if(c)c.classList.toggle('active',x===t);var b=document.getElementById('tab-btn-'+x);if(b)b.classList.toggle('active',x===t);});if(t==='dash')updateDashboardUI();if(isMobile())closeAllSidebars();}
 function openActionsSheet(){var b=document.getElementById('actionsBackdrop');b.style.display='block';setTimeout(function(){b.classList.add('open');},10);document.getElementById('actionsSheet').classList.add('open');}
 function closeActionsSheet(){var s=document.getElementById('actionsSheet'),b=document.getElementById('actionsBackdrop');s.classList.remove('open');b.classList.remove('open');setTimeout(function(){if(!b.classList.contains('open'))b.style.display='none';},220);}
@@ -1347,6 +2508,7 @@ window.addEventListener('load',function(){
   if(!applyLicenseGate()){setInterval(applyLicenseGate,60000);return;}
   try{init3DScene();}catch(e){console.error('init3D:',e);}
   initCharts();initColorSwatches();updateDashboardUI();renderTextureGrid();updateRebarGltfStatus();updateClashPinsButton();initRulesUI();
+  updateBooleanUI();updateUndoBtn();updateSimilarTabUI();
   window.addEventListener('resize',onWindowResize);
   window.addEventListener('orientationchange',function(){setTimeout(onWindowResize,300);});
   if(window.visualViewport){window.visualViewport.addEventListener('resize',onWindowResize);}
@@ -1355,7 +2517,7 @@ window.addEventListener('load',function(){
     console.log('%c🗺️ Navegação 3D','background:#0891b2;color:#fff;padding:3px 8px;border-radius:4px');
     console.log('• Roda: zoom • Esq: girar • Dir: pan • Duplo clique: focar');
     console.log('• W/A/S/D: andar • Q/E: subir/descer • Shift: acelerar');
-    console.log('%c✅ AP BIM v7.3 carregado','background:#059669;color:#fff;padding:3px 8px;border-radius:4px');
+    console.log('%c✅ AP BIM v7.9 carregado — Novas Ações','background:#059669;color:#fff;padding:3px 8px;border-radius:4px');
   },500);
 });
 </script>
